@@ -1,0 +1,11 @@
+filename,width,height,class,xmin,ymin,xmax,ymax
+test-1.jpg,1653,2339,barcode,278,37,866,231
+test-1.jpg,1653,2339,table,151,996,1639,2119
+test-1.jpg,1653,2339,company_address,134,254,824,469
+test-1.jpg,1653,2339,detail,905,271,1612,550
+test-2.jpg,1653,2339,barcode,228,26,848,255
+test-2.jpg,1653,2339,barcode,940,23,1563,220
+test-2.jpg,1653,2339,barcode,168,2077,1006,2286
+test-2.jpg,1653,2339,table,143,646,1634,1803
+test-2.jpg,1653,2339,company_address,114,280,806,500
+test-2.jpg,1653,2339,detail,920,277,1600,535

@@ -1,0 +1,20 @@
+item {
+    id: 1
+    display_name: "barcode"
+}
+
+item {
+    id: 2
+    display_name: "company_address"
+}
+
+item {
+    id: 3
+    display_name: "detail"
+}
+
+item {
+    id: 4
+    display_name: "table"
+}
+
