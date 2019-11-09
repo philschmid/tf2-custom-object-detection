@@ -10,8 +10,52 @@ import argparse
 
 from PIL import Image
 from tqdm import tqdm
-from object_detection.utils import dataset_util
 from collections import namedtuple, OrderedDict
+
+
+import tensorflow as tf
+
+
+def int64_feature(value):
+  return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
+
+
+def int64_list_feature(value):
+  return tf.train.Feature(int64_list=tf.train.Int64List(value=value))
+
+
+def bytes_feature(value):
+  return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
+
+
+def bytes_list_feature(value):
+  return tf.train.Feature(bytes_list=tf.train.BytesList(value=value))
+
+
+def float_list_feature(value):
+  return tf.train.Feature(float_list=tf.train.FloatList(value=value))
+
+
+def read_examples_list(path):
+  with tf.gfile.GFile(path) as fid:
+    lines = fid.readlines()
+  return [line.strip().split(' ')[0] for line in lines]
+
+
+def recursive_parse_xml_to_dict(xml):
+  if not xml:
+    return {xml.tag: xml.text}
+  result = {}
+  for child in xml:
+    child_result = recursive_parse_xml_to_dict(child)
+    if child.tag != 'object':
+      result[child.tag] = child_result[child.tag]
+    else:
+      if child.tag not in result:
+        result[child.tag] = []
+      result[child.tag].append(child_result[child.tag])
+  return {xml.tag: result}
+
 
 
 def __split(df, group):
@@ -65,29 +109,29 @@ def create_tf_example(group, path, class_dict):
         features=tf.train.Features(
             feature={
                 'image/height':
-                dataset_util.int64_feature(height),
+                 int64_feature(height),
                 'image/width':
-                dataset_util.int64_feature(width),
+                 int64_feature(width),
                 'image/filename':
-                dataset_util.bytes_feature(filename),
+                 bytes_feature(filename),
                 'image/source_id':
-                dataset_util.bytes_feature(filename),
+                 bytes_feature(filename),
                 'image/encoded':
-                dataset_util.bytes_feature(encoded_jpg),
+                 bytes_feature(encoded_jpg),
                 'image/format':
-                dataset_util.bytes_feature(image_format),
+                 bytes_feature(image_format),
                 'image/object/bbox/xmin':
-                dataset_util.float_list_feature(xmins),
+                 float_list_feature(xmins),
                 'image/object/bbox/xmax':
-                dataset_util.float_list_feature(xmaxs),
+                 float_list_feature(xmaxs),
                 'image/object/bbox/ymin':
-                dataset_util.float_list_feature(ymins),
+                 float_list_feature(ymins),
                 'image/object/bbox/ymax':
-                dataset_util.float_list_feature(ymaxs),
+                 float_list_feature(ymaxs),
                 'image/object/class/text':
-                dataset_util.bytes_list_feature(classes_text),
+                 bytes_list_feature(classes_text),
                 'image/object/class/label':
-                dataset_util.int64_list_feature(classes),
+                 int64_list_feature(classes),
             }))
     return tf_example
 
